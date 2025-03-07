@@ -1,49 +1,153 @@
-import { StyleSheet, Text, View, ScrollView } from "react-native";
-import { LineChart } from "react-native-gifted-charts";
+import { ThemedText } from "@/components/ThemedText";
+import { ThemedView } from "@/components/ThemedView";
+import { useThemeColor } from "@/hooks/useThemeColor";
+import { EChartsInstance } from "echarts-for-react";
+import { useEffect, useRef, useState } from "react";
+import { StyleSheet, Text, View, ScrollView, Alert, Touchable } from "react-native";
+import ECharts from "react-native-echarts-pro";
+import OutsidePressHandler from "react-native-outside-press";
 
+const option = {
+  title: {
+    text: 'Stacked Area Chart'
+  },
+  tooltip: {
+    trigger: 'axis',
+    confine: true,
+    axisPointer: {
+      type: 'cross',
+      label: {
+        backgroundColor: '#6a7985'
+      }
+    }
+  },
+  legend: {
+    show: false
+  },
+  toolbox: {
+    feature: {
+      saveAsImage: {}
+    }
+  },
+  grid: {
+    left: '3%',
+    right: '4%',
+    bottom: '3%',
+    containLabel: true
+  },
+  xAxis: [
+    {
+      type: 'category',
+      boundaryGap: false,
+      data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+    }
+  ],
+  yAxis: [
+    {
+      type: 'value'
+    }
+  ],
+  series: [
+    {
+      name: 'Email',
+      type: 'line',
+      smooth: true,
+      stack: 'Total',
+      areaStyle: {},
+      emphasis: {
+        focus: 'series'
+      },
+      data: [120, 132, 101, 134, 90, 230, 210]
+    },
+    {
+      name: 'Union Ads',
+      type: 'line',
+      smooth: true,
+      stack: 'Total',
+      areaStyle: {},
+      emphasis: {
+        focus: 'series'
+      },
+      data: [220, 182, 191, 234, 290, 330, 310]
+    },
+    {
+      name: 'Video Ads',
+      type: 'line',
+      smooth: true,
+      stack: 'Total',
+      areaStyle: {},
+      emphasis: {
+        focus: 'series'
+      },
+      data: [150, 232, 201, 154, 190, 330, 410]
+    },
+    {
+      name: 'Direct',
+      type: 'line',
+      smooth: true,
+      stack: 'Total',
+      areaStyle: {},
+      emphasis: {
+        focus: 'series'
+      },
+      data: [320, 332, 301, 334, 390, 330, 320]
+    },
+    {
+      name: 'Search Engine',
+      type: 'line',
+      smooth: true,
+      stack: 'Total',
+      label: {
+        show: true,
+        position: 'top'
+      },
+      areaStyle: {},
+      emphasis: {
+        focus: 'series'
+      },
+      data: [820, 932, 901, 934, 1290, 1330, 1320]
+    }
+  ]
+};
 
-const lineData = [
-  { value: 0, dataPointText: '0' },
-  { value: 20, dataPointText: '20' },
-  { value: 18, dataPointText: '18' },
-  { value: 40, dataPointText: '40' },
-  { value: 36, dataPointText: '36' },
-  { value: 60, dataPointText: '60' },
-  { value: 54, dataPointText: '54' },
-  { value: 85, dataPointText: '85' }
-];
 
 export default function ProfileScreen() {
+  const chartRef = useRef<EChartsInstance>(null);
+  const backgroundColor = useThemeColor({}, 'background');
+  const [dynamicOption, updateOption] = useState<any>(option);
+
+  const handleOutsideClick = () => {
+    chartRef.current.getInstance('dispatchAction', { type: 'hideTip' });
+    chartRef.current.getInstance('dispatchAction', { type: 'downplay' });
+  }
 
   return (
-    <View style={style.page}>
-      <View style={{backgroundColor: 'blue'}}>
-      <LineChart
-        initialSpacing={0}
-        data={lineData}
-        isAnimated
-        spacing={30}
-        textColor1="yellow"
-        textShiftY={-8}
-        textShiftX={-10}
-        textFontSize={13}
-        thickness={5}
-        hideRules
-        hideYAxisText
-        yAxisColor="#0BA5A4"
-        showVerticalLines
-        verticalLinesColor="rgba(14,164,164,0.5)"
-        xAxisColor="#0BA5A4"
-        color="#0BA5A4"
-      />
-      </View>
-    </View>
+    <ThemedView style={style.page}>
+      <OutsidePressHandler
+        onOutsidePress={() => handleOutsideClick()}
+        style={[{ backgroundColor }, style.panel]}>
+        <ThemedText id="Title" type="title" style={{ zIndex: 1 }}>Stocks</ThemedText>
+        <ThemedView style={{zIndex: 2}}>
+          <ECharts
+            ref={chartRef}
+            option={dynamicOption}
+            height={300}
+          />
+        </ThemedView>
+      </OutsidePressHandler>
+    </ThemedView>
   )
 }
 
 const style = StyleSheet.create({
   page: {
-    height: '100%',
-    width: '100%'
+    flex: 1,
+    paddingTop: 30,
+    paddingBottom: 50
   },
+  panel: {
+    width: '90%',
+    backgroundColor: 'transparent',
+    alignSelf: "center",
+  }
 })

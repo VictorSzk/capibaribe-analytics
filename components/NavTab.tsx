@@ -51,7 +51,12 @@ export const NavTab = ({ state, descriptors, navigation }: any) => {
             onLongPress={onLongPress}
             style={navBarStyles.tab}
           >
-            <Text style={{ color: isFocused ? colors.primary : colors.text }}>
+            <Text style={{ 
+              color: isFocused ? 'orange' : 'rgba(200, 200, 200, 1)',
+              textShadowColor: isFocused ? 'orange' : 'rgba(230, 230, 230, 0)',
+              textShadowOffset: {width:0, height: 0},
+              textShadowRadius: 5
+             }}>
               {label}
             </Text>
           </PlatformPressable>
@@ -64,20 +69,22 @@ export const NavTab = ({ state, descriptors, navigation }: any) => {
 const navBarStyles = StyleSheet.create({
   navigator:{
     position: 'absolute',
-    bottom: 10,
+    bottom: 30,
     flexDirection: 'row',
     justifyContent: 'space-around',
     alignItems: 'center',
-    backgroundColor: 'rgb(255, 255, 255)',
+    backgroundColor: 'rgb(35, 35, 35)',
     marginHorizontal: 15,
     paddingVertical: 10,
+    borderColor: 'gray',
+    borderWidth: 1,
     borderRadius: 25,
     borderCurve: 'continuous',
     shadowColor: 'black',
-    shadowOffset: {width: 0, height: 30},
+    shadowOffset: {width: 10, height: 30},
     shadowRadius: 10,
     shadowOpacity: .5,
-    elevation: 2,
+    elevation: 5,
   },
   tab:{
     flex: 1,
